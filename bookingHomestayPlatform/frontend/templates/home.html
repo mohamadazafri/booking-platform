@@ -1,24 +1,289 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-</head>
-<body>
-    <header>
-        <h1></h1>
+{% extends 'header.html' %}
+{% load static %}
+
+{% block body %}
+    <header class="w3-display-container" style ="height:94vh; width:100vw; display: flex; flex-direction: row">
+        
+        <div class="w3-padding w3-col l6 m8" style="display:flex; align-items:center; justify-content:center; width: 50%">
+            <div style="width: 90%">
+                <div class="w3-container w3-red">
+                <h2><i class="fa fa-bed w3-margin-right"></i>Hotel Name</h2>
+                </div>
+                <div class="w3-container w3-white w3-padding-16">
+
+                    <form action="#" method="get">
+                    <div class="w3-row-padding" style="margin:0 -16px;">
+                    <div class="w3-half w3-margin-bottom">
+                        <label><i class="fa fa-calendar-o"></i> Check In</label>
+                        <input id="check-in-input" class="w3-input w3-border" type="date" placeholder="DD MM YYYY" name="CheckIn" required>
+                    </div>
+                    <div class="w3-half">
+                        <label><i class="fa fa-calendar-o"></i> Check Out</label>
+                        <input id="check-out-input" class="w3-input w3-border" type="date" placeholder="DD MM YYYY" name="CheckOut" required>
+                    </div>
+                    </div>
+                    <div class="w3-row-padding" style="margin:8px -16px;">
+                    <div class="w3-half w3-margin-bottom">
+                        <label for="adults-input"><i class="fa fa-male"></i> Adults</label>
+                        <input id="adults-input" class="w3-input w3-border" type="number" value="1" name="Adults" min="1" max="6">
+                    </div>
+                    <div class="w3-half">
+                        <label for = 'kids-input'><i class="fa fa-child"></i> Kids</label>
+                        <input id="kids-input" class="w3-input w3-border" type="number" value="0" name="Kids" min="0" max="6">
+                    </div>
+                    </div>
+                    <button class="w3-button w3-dark-grey" type="button" onclick="checkAvailable()"><i class="fa fa-search w3-margin-right"></i> Search availability</button>
+                </form>
+
+                </div>
+            </div>
+        </div>
+        
+        <div style = "width: 100px; height: 100px; border-radius: 0px 0px 0px 15px; background-color: #F8F8F8 ;height: 100%; width:50%; display: flex; align-items: center; justify-content: center;">
+            <div id="first-start">
+                Choose date
+            </div>
+
+
+            <div id = 'available-unit' style="display: none; width: 80%; height: 80%;">
+
+                <h1 style="font-size: 20px; display: inline;">Available unit</h1>
+
+                <div style="width: 100%; height: 100%; display: grid; grid-template-columns:45% 45%; grid-template-rows: 45% 45%; align-content: space-evenly; justify-content: space-evenly; ">
+
+                    {% for unit in house_unit_data %}
+    
+                    <div class="w3-bar-item w3-button w3-mobile" style="height: 100% ; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; border-radius: 5px; display: flex; flex-direction: column;" onclick="toForm(this)" data-value="{{unit.id}}">
+                        <h1 style="font-size: 20px;">House</h1>
+                        <h2 style="font-size: 50px;">{{unit.house_number}}</h2>
+                        <p>RM{{unit.price | floatformat:2}}</p>
+                    </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div id="customer-form" style="display: none; width: 80%; height: 80%; ">
+                <div style="height: 100%;" >
+
+                    <form id="cust-detail" class="w3-container" action="#" method="post">
+                        {% csrf_token %}
+                        <label for="cust-name">Name</label>
+                        <input class="w3-input" id = "cust-name" style="border: 1px solid #afafaf; margin-bottom: 20px; width: 100%;" type="text">
+                        <label for="cust-desc">Description</label><br>
+                        <textarea class="w3-input" id = "cust-desc" style="border: 1px solid #afafaf; max-width: 100%; max-height: 200px; "></textarea>
+                    </form>
+                </div>
+                <div class="w3-container" style="flex-grow: 1;">
+                    <button type="button" style="border: none; color:rgb(30, 81, 123); background-color: transparent; height: 50px; font-size: 15px; position: absolute; float: left;  width: 30px;" onclick="">Back</button>
+
+                    <button type="button" style="border:1px solid rgba(255, 255, 255, 0);color: #f5f5f5; background-color: rgb(47, 107, 156); height: 50px; font-size: 15px; float:right; border-radius: 5px; width: 100px;" onclick="toDetail()">Confirm</button>
+                </div>
+            </div>
+
+            <div id="check-detail" style="display: none; width: 80%; height: 81%; ">
+                <div style="height: 100%; width: 100%; overflow: auto;" >
+                    <div id="cust-detail" class="w3-container">
+                        <div id="homestay-logo" style="display: flex; align-content: center; justify-content: center; margin-bottom: 20px;">
+                            <img src="{% static 'img/logo.png' %}" alt="Homestay Logo" style="height: 60px; width: auto;">
+                        </div>
+
+                        <div style="display: flex; justify-content: space-around; margin-bottom: 40px;">
+                            <div style="height: 120px;width: 120px;align-content: center;display: flex;flex-direction: column;align-items: center;border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+                                <label style="align-content: center;justify-content: center;margin: 15px 0px;">House</label>
+                                <p id="cust-detail-unit" style="margin: 0px; font-size: 20px;"></p>
+                            
+                            </div>
+                            <div style="height: 120px;width: 120px;align-content: center;display: flex;flex-direction: column;align-items: center;border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+                                <label style="align-content: center;justify-content: center;margin: 15px 0px;">Check-in</label>
+                                <p id="cust-detail-check-in" style="margin: 0px; font-size: 20px;"></p>
+                            
+                            </div>
+                            <div style="height: 120px;width: 120px;align-content: center;display: flex;flex-direction: column;align-items: center;border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+                                <label style="align-content: center;justify-content: center;margin: 15px 0px;">Check-out</label>
+                                <p id="cust-detail-check-out" style="margin: 0px; font-size: 20px;"></p>
+                            
+                            </div>
+
+                        </div>
+                        <div style="display: flex; flex-direction: row; width: 100%; height: auto;">
+                            <div style="margin-right: 60px; width: 50%;">
+                                <label for="cust-detail-name">Name</label>
+                                <p id="cust-detail-name"></p>
+                                <label for="cust-detail-adults">Adults</label>
+                                <p id="cust-detail-adults"></p>
+                                <label for="cust-detail-kids">Kids</label>
+                                <p id="cust-detail-kids"></p>
+                            </div>
+                            <div style="width: 50%; border-left: 1px solid rgb(41, 41, 41); padding-left: 20px;">
+                                <label for="cust-detail-desc">Description</label><br>
+                                <p id = "cust-detail-desc"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w3-container" style="flex-grow: 1;">
+                    <button type="button" style="border: none; color:rgb(30, 81, 123); background-color: transparent; height: 50px; font-size: 15px; position: absolute; float: left;  width: 30px;" onclick="backForm()">Back</button>
+
+                    <button type="button" style="border:1px solid rgba(255, 255, 255, 0);color: #f5f5f5; background-color: rgb(47, 107, 156); height: 50px; font-size: 15px; float:right; border-radius: 5px; width: 100px;" onclick="createBooking()">Confirm</button>
+                </div>
+
+            </div>
+
+            <div id="success-booking" style="display: none;">
+                <p style="color: rgb(135, 192, 51)"><i class="fa fa-check" aria-hidden="true" style="margin-right: 10px;"></i>Successfully booked</p>
+            </div>
+        </div>
     </header>
 
-    <main>
-        <form action="#">
-            <label for="check-in">Check in date</label>
-            <input type="date" name="check-in">
-            <label for="check-out">Check out date</label>
-            <input type="date" name="check-out">
+    <div class="" style = "height: 6vh">
+        <a href="#" class="w3-bar-item w3-button w3-red w3-mobile" style="height: 100%"><i class="fa fa-bed w3-margin-right"></i>Logo</a>
+        <a href="#rooms" class="w3-bar-item w3-button w3-mobile" style="height: 100%">Rooms</a>
+        <a href="#about" class="w3-bar-item w3-button w3-mobile" style="height: 100%">About</a>
+        <a href="#contact" class="w3-bar-item w3-button w3-mobile" style="height: 100%">Contact</a>
+        <a href="{% url 'booking'%}" class="w3-bar-item w3-button w3-mobile" style="height: 100%">Booking</a>
+        <a href="#contact" class="w3-bar-item w3-button w3-right w3-light-grey w3-mobile" style="height: 100%">Book Now</a>
+    </div>
 
-        </form>
-    </main>
 </body>
+
+<script>
+    var house_unit;
+    var check_in ;
+    var check_out ;
+    var total_adults ;
+    var total_kids ;
+    var cust_name ;
+    var cust_desc ;
+    var csrf_token;
+
+    $(document).ready(function(){
+        $('#check-in-input').attr('min', getTodayDate())
+        $('#check-out-input').attr('min', getTodayDate())
+
+        document.getElementById('first-start').style.display = 'none';
+        document.getElementById('available-unit').style.display = 'none';
+        document.getElementById('customer-form').style.display = 'none';
+        document.getElementById('check-detail').style.display = 'none';
+        document.getElementById('success-booking').style.display = 'block';
+
+    });
+
+    function formdatDate(input_date){
+        var date = new Date(input_date);
+        console.log(input_date)
+        console.log(typeof input_date)
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1 ;
+        var year =  date.getFullYear();
+
+        var format_date = day + '/' + month + '/' + year;
+        return format_date
+    }
+
+    function checkAvailable(){
+        check_in = document.getElementById('check-in-input') 
+        check_out = document.getElementById('check-out-input')
+
+        if(check_in.value > check_out.value && check_out.value < check_in.value) {
+            check_in.setCustomValidity('Your check-in date is a day ahead than the check-out date')
+            check_in.reportValidity()
+        } else {
+            document.getElementById('first-start').style.display = 'none';
+            document.getElementById('available-unit').style.display = 'grid';
+            document.getElementById('customer-form').style.display = 'none';
+            document.getElementById('check-detail').style.display = 'none';
+            document.getElementById('success-booking').style.display = 'none';
+
+        }
+        
+
+    }
+
+    function toForm(unit) {
+        house_unit = unit.getAttribute('data-value')
+        document.getElementById('first-start').style.display = 'none';
+        document.getElementById('available-unit').style.display = 'none';
+        document.getElementById('customer-form').style.display = 'block';
+        document.getElementById('check-detail').style.display = 'none';
+        document.getElementById('success-booking').style.display = 'none';
+
+    }
+
+    function backForm(){
+        document.getElementById('first-start').style.display = 'none';
+        document.getElementById('available-unit').style.display = 'grid';
+        document.getElementById('customer-form').style.display = 'none';
+        document.getElementById('check-detail').style.display = 'none';
+        document.getElementById('success-booking').style.display = 'none';
+
+    }
+
+    function toDetail(){
+        csrf_token = getCSRFTokenValue()
+        
+        check_in = document.getElementById('check-in-input').value 
+        check_out = document.getElementById('check-out-input').value
+        total_adults = document.getElementById('adults-input').value
+        total_kids = document.getElementById('kids-input').value
+        cust_name = document.getElementById('cust-name').value
+        cust_desc = document.getElementById('cust-desc').value
+
+        var detail_unit = document.getElementById('cust-detail-unit')
+        var detail_name = document.getElementById('cust-detail-name')
+        var detail_check_in = document.getElementById('cust-detail-check-in')
+        var detail_check_out = document.getElementById('cust-detail-check-out')
+        var detail_adults = document.getElementById('cust-detail-adults')
+        var detail_kids = document.getElementById('cust-detail-kids')
+        var detail_desc = document.getElementById('cust-detail-desc')
+
+        detail_unit.innerHTML = '<b>' + house_unit + '</b>'
+        detail_name.innerHTML = '<b>' + cust_name+ '</b>'
+        detail_check_in.innerHTML = '<b>' + check_in+ '</b>'
+        detail_check_out.innerHTML = '<b>' + check_out+ '</b>'
+        detail_adults.innerHTML = '<b>' + total_adults+ '</b>'
+        detail_kids.innerHTML = '<b>' + total_kids+ '</b>'
+        detail_desc.innerHTML = '<b>' + cust_desc+ '</b>'
+
+        document.getElementById('first-start').style.display = 'none';
+        document.getElementById('available-unit').style.display = 'none';
+        document.getElementById('customer-form').style.display = 'none';
+        document.getElementById('check-detail').style.display = 'block';
+        document.getElementById('success-booking').style.display = 'none';
+
+    }
+
+    function createBooking() {
+        const csrfToken = getCookie('csrftoken')
+        
+        var formData = new FormData();
+
+        formData.append('csrfmiddlewaretoken', '{{csrf_token}}')
+        formData.append('house_unit', house_unit)
+        formData.append('check_in_date', check_in)
+        formData.append('check_out_date', check_out)
+        formData.append('name', cust_name)
+        formData.append('total_adult', total_adults)
+        formData.append('total_kid', total_kids)
+        formData.append('desc', cust_desc)
+
+        fetch('{% url "booking-list" %}', {
+            method: 'POST', 
+            body: formData, 
+        })
+        .then(res => res.json())
+        .then(resData => {
+            document.getElementById('success-booking').style.display = 'block';
+
+        })
+
+    }
+
+</script>
 </html>
+{% endblock  %}

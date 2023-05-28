@@ -1,0 +1,58 @@
+{% extends 'header.html' %}
+
+{% block body %}
+    <div style="margin-top: 0;">
+        <div>
+            <ul style="list-style: none; display: flex;">
+                <li style="height: 50px; width: 100px; margin-right: 20px">
+                    <button style="border: none; background: rgba(255, 255, 255, 0.15); border-radius: 5px;box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);backdrop-filter: blur(3.6px);border: 1px solid rgba(255, 255, 255, 0.19); width: 100%; height: 80%;">
+                        All
+                    </button>
+                </li>
+                <li style="height: 50px; width: 100px; margin-right: 20px">
+                    <button style="border: none; background: rgba(255, 255, 255, 0.15); border-radius: 5px;box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);backdrop-filter: blur(3.6px);border: 1px solid rgba(255, 255, 255, 0.19); width: 100%; height: 80%;">
+                        Today
+                    </button>
+                </li>
+                <li style="height: 50px; width: 100px; margin-right: 20px">
+                    <button style="border: none; background: rgba(255, 255, 255, 0.15); border-radius: 5px;box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);backdrop-filter: blur(3.6px);border: 1px solid rgba(255, 255, 255, 0.19); width: 100%; height: 80%;">
+                        Upcoming
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <hr>
+
+        <div class = "w3-responsive" style="margin: 10px 50px">
+            <table class="w3-table-all w3-bordered w3-hoverable" style="border-radius: 5px">
+                <tr>
+                    <th></th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Check-In</th>
+                    <th>Check-Out</th>
+                    <th>Total Night</th>
+                    <th>Adult</th>
+                    <th>Kid</th>
+                </tr>
+                
+                {% for book in booking_data %}
+                    <tr>
+                        <td>1 week left</td>
+                        <td>{{book.id}}</td>
+                        <td>{{book.customer.name}}</td>
+                        <td>{{book.check_in_date}}</td>
+                        <td>{{book.check_out_date}}</td>
+                        <td>5</td>
+                        <td>{{book.total_adult}}</td>
+                        <td>{{book.total_child}}</td>
+                    </tr>
+                {% endfor %}
+    
+            </table>        
+        </div>
+    </div>
+
+</body>
+</html>
+{% endblock %}
