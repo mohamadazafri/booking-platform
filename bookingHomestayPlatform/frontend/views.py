@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from .templates import *
 from client.models import *
 from client.serializers import *
+import requests
+from PyPDF2 import PdfFileReader, PdfFileWriter
 
 def home(request):
     queryset = HouseUnit.objects.all()
@@ -13,10 +15,24 @@ def home(request):
     return render(request, 'home.html', context)
 
 def booking(request):
-    queryset = Booking.objects.all()
+    book_query = Booking.objects.all()
+    book_serializer = BookingCustomerSerializer(book_query, many=True)    
+
+    print(book_serializer.data)
     context = {
-        'booking_data' : queryset,
+        'booking_data' : book_serializer.data,
     }
     return render(request, 'booking.html', context)
 
+def test(request):
+    
+    return render(request, 'test.html')
+
+def displayPDF(request):
+    responseData = requests.get("https://nsi-live.oss-ap-southeast-3.aliyuncs.com/dmsusersubs/1922/CP22_Pin.1_2021.pdf")
+        
+    return HttpResponse(responseData.content, 
+                        headers={"Content-Type": "application/pdf",
+                                 "Content-Disposition": 'inline; filename=\"test.pdf\"',
+                                 })
 

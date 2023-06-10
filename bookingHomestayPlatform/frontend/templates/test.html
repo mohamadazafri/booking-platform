@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <a href="#" onclick="apiCall()">Test</a> -->
+    <a href="{% url 'displayPDF' %}">Test</a>
+    <h1>Hllo</h1>
+
+    <!-- <iframe id="displayPDF" src="" style="width: 100%; height: 500px"></iframe> -->
+    <!-- <embed id="displayPDF" src="" type="application/pdf"> -->
+
+    <script>
+
+        // function apiCall(){
+        //     fetch('http://localhost:8000/api/test/', {
+        //         method: 'GET'
+        //     })
+        //     .then(res => res.arrayBuffer())
+        //     .then(resBuffer => {
+        //         // Create a new Uint8Array from the received array buffer
+        //         const uint8Array = new Uint8Array(resBuffer);
+
+        //         // Convert the Uint8Array to a regular array
+        //         const byteArray = Array.from(uint8Array);
+
+        //         // Create a new Blob object from the byte array
+        //         // const blob = new Blob([new Uint8Array(byteArray)], { type: 'application/pdf' });
+        //         const blob = new File([new Uint8Array(byteArray)], "text.pdf" ,{ type: 'application/pdf' });
+
+        //         // Create a URL for the Blob object
+        //         const blobUrl = URL.createObjectURL(blob);
+
+        //         // Create an <iframe> element to display the PDF
+        //         const iframe = document.getElementById('displayPDF');
+        //         iframe.src = blob;
+
+        //     })
+        // }
+    </script>
+</body>
+</html>

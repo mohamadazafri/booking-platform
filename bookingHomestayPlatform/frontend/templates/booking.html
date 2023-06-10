@@ -34,6 +34,7 @@
                     <th>Total Night</th>
                     <th>Adult</th>
                     <th>Kid</th>
+                    <th>Invoice</th>
                 </tr>
                 
                 {% for book in booking_data %}
@@ -46,6 +47,7 @@
                         <td>5</td>
                         <td>{{book.total_adult}}</td>
                         <td>{{book.total_child}}</td>
+                        <td><button type="button"><a href="{% url 'show-invoice' pk=book.id filename=book.invoice_title %}">View</a></button></td> 
                     </tr>
                 {% endfor %}
     
