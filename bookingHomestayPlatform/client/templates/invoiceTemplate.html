@@ -1,64 +1,132 @@
 {% load static %}
-
-<!DOCTYPE html>
 <html>
-<head>
-    <title>22 Idaman</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-    body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
-    </style>
-</head>
-<body class="w3-light-grey">
-    <!-- <div>{{hello}}</div> -->
-    <div style="height: 100%; width: 100%; overflow: auto;" >
-        <div id="cust-detail" class="w3-container">
-            <div id="homestay-logo" style="display: flex; align-content: center; justify-content: center; margin-bottom: 20px;">
-                <img src="C:\Users\USER\OneDrive\Desktop\booking-platform\bookingHomestayPlatform\staticfiles\img\logo.png" alt="Homestay Logo" style="height: 60px; width: auto;">
-            </div>
 
-            <div style="display: flex; justify-content: space-around; margin-bottom: 40px;">
-                <div style="height: 120px;width: 120px;align-content: center;display: flex;flex-direction: column;align-items: center;border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+    <head>
+        <title>22 Idaman</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="C:\Users\USER\OneDrive\Desktop\booking-platform\bookingHomestayPlatform\staticfiles\css\invoice_styles.css">
+        <style>
 
-                    <label style="align-content: center;justify-content: center;margin: 15px 0px;">House</label>
-                    <p id="cust-detail-unit" style="margin: 0px; font-size: 20px;">{{house_unit}}</p>
-                
-                </div>
-                <div style="height: 120px;width: 120px;align-content: center;display: flex;flex-direction: column;align-items: center;border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+        </style>
+    </head>
 
-                    <label style="align-content: center;justify-content: center;margin: 15px 0px;">Check-in</label>
-                    <p id="cust-detail-check-in" style="margin: 0px; font-size: 20px;">{{check_in_date}}</p>
-                
-                </div>
-                <div style="height: 120px;width: 120px;align-content: center;display: flex;flex-direction: column;align-items: center;border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
-
-                    <label style="align-content: center;justify-content: center;margin: 15px 0px;">Check-out</label>
-                    <p id="cust-detail-check-out" style="margin: 0px; font-size: 20px;">{{check_out_date}}</p>
-                
+    <body class="">
+        <div style="height: 100%; width: 100%; overflow: auto;">
+            <div id="cust-detail" class="w3-container">
+                <div id="homestay-logo" style="display: -webkit-box; align-content: center; -webkit-box-pack: center ;margin-bottom: 20px;">
+                    <img src="C:\Users\USER\OneDrive\Desktop\booking-platform\bookingHomestayPlatform\staticfiles\img\logo.png" alt="Homestay Logo" style="height: 60px; width: auto;">
                 </div>
 
-            </div>
-            <div style="display: flex; flex-direction: row; width: 100%; height: auto;">
-                <div style="margin-right: 60px; width: 50%;">
-                    <label for="cust-detail-name">Name</label>
-                    <p id="cust-detail-name">{{cust_name}}</p>
-                    <label for="cust-detail-adults">Adults</label>
-                    <p id="cust-detail-adults">{{total_adult}}</p>
-                    <label for="cust-detail-kids">Kids</label>
-                    <p id="cust-detail-kids">{{total_child}}</p>
-                </div> 
+                <div style="display: -webkit-box;-webkit-box-pack: justify;/* margin-bottom: 40px; *//* width: 50%; */margin: 40px 100px;">
+                    <div style="-webkit-box-pack: center; height: 120px;width: 120px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+                        <label style="margin: 15px 0px; display: block; text-align: center;">House</label>
+                        <!-- <p id="cust-detail-unit" style="margin: 0px; font-size: 20px;">{{house_unit}}</p> -->
+                        <p id="cust-detail-unit" style="margin: 0px; font-size: 20px; display: block; text-align: center;">{{house_unit}}</p>
+                    
+                    </div>
+                    <div style="-webkit-box-pack: center; height: 120px;width: 120px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+                        <label  style="margin: 15px 0px; display: block; text-align: center;">Check-in</label>
+                        <!-- <p id="cust-detail-check-in" style="margin: 0px; font-size: 20px;">{{check_in_date}}</p> -->
+                        <p id="cust-detail-check-in" style="margin: 0px; font-size: 20px; display: block; text-align: center;">{{check_in_date}}</p>
+                    
+                    </div>
+                    <div style="-webkit-box-pack: center; height: 120px;width: 120px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+                        <label  style="margin: 15px 0px; display: block; text-align: center;">Check-out</label>
+                        <!-- <p id="cust-detail-check-out" style="margin: 0px; font-size: 20px;">{{check_out_date}}</p> -->
+                        <p id="cust-detail-check-out" style="margin: 0px; font-size: 20px; display: block; text-align: center;">{{check_out_date}}</p>
+                    
+                    </div>
+
+                </div>
+
+                <div style="height: auto; margin: 40px 100px;">
+                    <table class="invoice_detail" style="width: 400px">
+                        <tr>
+                            <th>Date:</th>
+                            <td>{{invoice_date}}</td>
+                        </tr>
+                        <tr>
+                            <th>Invoice Number:</th>
+                            <td>{{invoice_number}}</td>
+                        </tr>
+                        <tr>
+                            <th>Confirmation Code:</th>
+                            <td>{{confirmation_code}}</td>
+                        </tr>
+                    </table>
+                    
+                    <hr>
+                    <h2>Booking Detail</h2>
+                    <table class="customer_detail">
+                        <tr>
+                            <th>Guest Name</th>
+                            <td>{{guest_name}}</td>
+                        </tr>
+                        <tr>
+                            <th>Total Night</th>
+                            <td>{{total_night}} night</td>
+                        </tr>
+                        <tr>
+                            <th>Adult</th>
+                            <td>{{total_adult}}</td>
+                        </tr>
+                        <tr>
+                            <th>Kids</th>
+                            <td>{{total_kids}}</td>
+                        </tr>
+                        <tr>
+                            <th>Accommodation Address</th>
+                            <td>22, Kampung Tradisi Lembah Keriang, LEBUHRAYA UUM, Sintok, 06010 Bukit Kayu Hitam, Kedah</td>
+                        </tr>
+                        <tr>
+                            <th>Accommodation Type</th>
+                            <td>House</td>
+                        </tr>
+                    </table>
+
+                    <hr>
+                    <h2>Reservation Charges</h2>
+                    <table class="reservation_charges">
+                        <tr>
+                            <th>RM{{price_per_night}} x {{total_night}} days</th>
+                            <td style="width: 50%;">RM</td>
+                            <td>{{price_total_night}}</td>
+                        </tr>
+                        <tr>
+                            <th>Deposit</th>
+                            <td style="width: 50%;">RM</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <th>Cleaning Fee</th>
+                            <td style="width: 50%;">RM</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <th>Service Fee</th>
+                            <td style="width: 50%;">RM</td>
+                            <td>0</td>
+                        </tr>
+
+                        <tr>
+                            <th style="text-align: end; width: 80%;">Total</th>
+                            <td style="width: 50%;">RM </td>
+                            <td>{{price_total_night}}</td>
+                        </tr>
+
+                    </table>
+
+
+                </div>
             </div>
         </div>
-    </div>
-<!-- 
-    <div style="width: 50%; border-left: 1px solid rgb(41, 41, 41); padding-left: 20px;">
-        <label for="cust-detail-desc">Description</label><br>
-        <p id = "cust-detail-desc"></p>
-    </div>  -->
-</body>
-</html>
 
+    </body>
+</html>

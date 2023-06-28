@@ -1,0 +1,40 @@
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Raleway", Arial, Helvetica, sans-serif
+}
+
+table {
+    width: 100%;
+}
+
+tr {
+    height: 50px;
+}
+
+tr:nth-child(odd) {
+    background-color: #f4f4f4;
+}
+
+th {
+    text-align: start;
+    border: none;
+    padding-left: 30px;
+}
+
+td {
+    text-align: end;
+    border: none;
+    padding-right: 30px;
+}
+
+table,
+th,
+td {
+    border: none;
+    border-collapse: collapse;
+}

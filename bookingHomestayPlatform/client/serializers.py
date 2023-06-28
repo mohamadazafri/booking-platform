@@ -35,6 +35,11 @@ class BookingCustomerSerializer(serializers.ModelSerializer):
         model = Booking
         fields = '__all__'
         depth = 2
+
+class InvoiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Invoice
+        fields = '__all__'
         
 class BookingSaveSerializer(serializers.Serializer):
     invoice_content = serializers.CharField()

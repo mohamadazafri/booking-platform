@@ -14,6 +14,7 @@ import requests
 import random
 import string
 import uuid
+from datetime import datetime
 
 class HomestayViewSet(ViewSet):
     # queryset = Homestay.objects.all()
@@ -94,26 +95,12 @@ class HouseUnitViewSet(ViewSet):
 class BookingViewSet(ViewSet):
 
     def showInvoice(self, request, pk = None, filename = None):
-        # cust_query = Customer.objects.get(booking__id = pk)
-        # book_query = Booking.objects.get(id = pk)
-
+        pdb.set_trace()
         invoice = Invoice.objects.get(booking__id = pk)
 
         return HttpResponse(bytes(invoice.content), headers={"Content-Type": "application/pdf",
                                  "Content-Disposition": 'inline; filename=\"' + invoice.title +'.pdf\"',
                                  })
-
-        # cust_name = "Azafri"
-        # house_unit = "1"
-        # checkInDate = "27/1/2023"
-        # checkOutDate = "30/1/2023"
-        # totalAdult = 1
-        # totalChild = 0
-        # invoiceTitle = "Hello world"
-        
-        # context = {"cust_name" : cust_name, "house_unit": house_unit, "check_in_date": checkInDate, "check_out_date": checkOutDate, "total_adult": totalAdult, "total_child": totalChild, "invoice_title": invoiceTitle }
-
-        # return render(request, 'invoiceTemplate.html', context)
 
     def list(self, request):
         queryset = Booking.objects.all()
@@ -122,9 +109,10 @@ class BookingViewSet(ViewSet):
         return Response(serializers.data)
     
     def create(self, request):
-        pdb.set_trace()
+        # pdb.set_trace()
         cust_name = request.POST.get('name')
-        houseUNit = request.POST.get('house_unit')
+        houseUnit = request.POST.get('house_unit')
+        priceUnit = request.POST.get('price_per_night')
         checkInDate = request.POST.get('check_in_date')
         checkOutDate = request.POST.get('check_out_date')
         totalAdult = request.POST.get('total_adult')
@@ -132,11 +120,21 @@ class BookingViewSet(ViewSet):
         purpose = request.POST.get('purpose_of_booking')
         invoiceTitle = str(cust_name) + "--" + str(checkInDate) + "-" + str(checkOutDate) +".pdf"
 
+        total_night = datetime.strptime(checkOutDate, "%Y-%m-%d") - datetime.strptime(checkInDate, "%Y-%m-%d")
+
+        price_total_night = total_night.days * float(priceUnit)
+
         cust = Customer.objects.create(name=cust_name)
 
-        house = HouseUnit.objects.get(id = int(houseUNit))
+        house = HouseUnit.objects.get(id = int(houseUnit))
 
-        context = {"cust_name" : cust_name, "house_unit": houseUNit, "check_in_date": checkInDate, "check_out_date": checkOutDate, "total_adult": totalAdult, "total_child": totalChild  }
+        invoice_date = datetime.now().strftime("%d %B, %Y (%H:%M)")
+
+        confirmationCode = random.choice(string.ascii_uppercase) + str(random.randint(1000,9999))
+
+        invoiceNumber = random.randint(1000,9999)
+
+        context = {"guest_name" : cust_name, "house_unit": houseUnit, "check_in_date": checkInDate, "check_out_date": checkOutDate, "total_adult": totalAdult, "total_kids": totalChild, 'total_night': total_night.days, 'price_per_night': float(priceUnit), 'price_total_night': price_total_night, "invoice_date": invoice_date, "confirmation_code": confirmationCode, "invoice_number": invoiceNumber}
 
         invoice_HTML = render(request, 'invoiceTemplate.html', context).content.decode('UTF-8')
 
@@ -153,14 +151,11 @@ class BookingViewSet(ViewSet):
 
         invoicePDF = pdfkit.from_string(invoice_HTML, configuration=pdf_config, options={"--enable-local-file-access" : True})
 
-        receiptNumber = random.randint(1000,9999)
         new_invoice = Invoice(title = invoiceTitle,
                               content = invoicePDF,
-                              receipt_number = receiptNumber)
+                              receipt_number = invoiceNumber)
         
         new_invoice.save()
-
-        confirmationCode = random.choice(string.ascii_uppercase) + str(random.randint(1000,9999))
 
         new_book = Booking(customer_id = cust.id,
                             house_unit_id = house.id,
@@ -174,8 +169,9 @@ class BookingViewSet(ViewSet):
                             )
         
         new_book.save()
+        invoice_serializer = InvoiceSerializer(new_invoice)
         
-        return Response({"success": "done"})
+        return Response({"success": "done", "invoice_detail": invoice_serializer.data})
 
 
     def retrieve(self, request, pk = None):
@@ -199,21 +195,6 @@ class BookingViewSet(ViewSet):
         serializers.save()
         
         return Response(serializers.data)
-    
-    # def test(self, request) :
-        
-    #     # response = requests.get("https://nsi-live.oss-ap-southeast-3.aliyuncs.com/dmsusersubs/2601/test.pdf")
-    #     responseData = requests.get("https://nsi-live.oss-ap-southeast-3.aliyuncs.com/dmsusersubs/1918/test.pdf")
-
-        
-    #     # # bytePDF = bytearray(response.content)
-    #     data = io.BytesIO()
-    #     data.write(responseData.content)
-    #     data.seek(0)
-
-    #     response = FileResponse(data.getvalue(), filename="example.pdf")
-
-    #     return response
     
 class CustomerViewSet(ViewSet):
 
