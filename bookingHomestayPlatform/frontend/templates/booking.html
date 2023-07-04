@@ -39,7 +39,14 @@
                 
                 {% for book in booking_data %}
                     <tr>
-                        <td>1 week left</td>
+                        {% if book.arrival_days_left == 0 %}
+                            <td>Today</td>
+                        {% elif book.arrival_days_left == 1 %}
+                            <td>Tomorrow</td>
+                        {% else %}
+                            <td>{{book.arrival_days_left}} days</td>
+                        {% endif %}
+                        
                         <td>{{book.id}}</td>
                         <td>{{book.customer.name}}</td>
                         <td>{{book.check_in_date}}</td>
@@ -47,7 +54,7 @@
                         <td>5</td>
                         <td>{{book.total_adult}}</td>
                         <td>{{book.total_child}}</td>
-                        <td><button type="button"><a href="{% url 'show-invoice' pk=book.id filename=book.invoice.title %}">View</a></button></td> 
+                        <td><button type="button"><a href="{% url 'show-invoice' pk=book.invoice.id filename=book.invoice.title %}" target="_blank">View</a></button></td> 
                     </tr>
                 {% endfor %}
     

@@ -68,14 +68,23 @@
 
                     <form id="cust-detail" class="w3-container" action="#" method="post">
                         {% csrf_token %}
-                        <label for="cust-name">Name</label>
+                        <label for="cust-name" id="label-name">Name</label>
                         <input class="w3-input" id = "cust-name" style="border: 1px solid #afafaf; margin-bottom: 20px; width: 100%;" type="text">
-                        <label for="cust-desc">Description</label><br>
+
+                        <div>
+                            <label for="check-in-time" id="label-check-in-time">Check-in time</label>
+                            <input class="w3-input" id = "check-in-time" style="border: 1px solid #afafaf; margin-bottom: 20px; width: 100%;" type="time" value = "15:00">
+
+                            <label for="check-out-time" id="label-check-out-time">Check-out time</label>
+                            <input class="w3-input" id = "check-out-time" style="border: 1px solid #afafaf; margin-bottom: 20px; width: 100%;" type="time" value = "12:00">
+                        </div>
+                        
+                        <label for="cust-desc">Remarks</label><br>
                         <textarea class="w3-input" id = "cust-desc" style="border: 1px solid #afafaf; max-width: 100%; max-height: 200px; "></textarea>
                     </form>
                 </div>
                 <div class="w3-container" style="flex-grow: 1;">
-                    <button type="button" style="border: none; color:rgb(30, 81, 123); background-color: transparent; height: 50px; font-size: 15px; position: absolute; float: left;  width: 30px;" onclick="">Back</button>
+                    <button type="button" style="border: none; color:rgb(30, 81, 123); background-color: transparent; height: 50px; font-size: 15px; position: absolute; float: left;  width: 30px;" onclick="backAvailableUnit()">Back</button>
 
                     <button type="button" style="border:1px solid rgba(255, 255, 255, 0);color: #f5f5f5; background-color: rgb(47, 107, 156); height: 50px; font-size: 15px; float:right; border-radius: 5px; width: 100px;" onclick="toDetail()">Confirm</button>
                 </div>
@@ -98,13 +107,13 @@
                             <div style="height: 120px;width: 120px;align-content: center;display: flex;flex-direction: column;align-items: center;border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
 
                                 <label style="align-content: center;justify-content: center;margin: 15px 0px;">Check-in</label>
-                                <p id="cust-detail-check-in" style="margin: 0px; font-size: 20px;"></p>
+                                <p id="cust-detail-check-in" style="margin: 0px; font-size: 20px; text-align: center;"></p>
                             
                             </div>
                             <div style="height: 120px;width: 120px;align-content: center;display: flex;flex-direction: column;align-items: center;border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
 
-                                <label style="align-content: center;justify-content: center;margin: 15px 0px;">Check-out</label>
-                                <p id="cust-detail-check-out" style="margin: 0px; font-size: 20px;"></p>
+                                <label style="align-content: center;justify-content: center;margin: 15px 0px; text-align: center">Check-out</label>
+                                <p id="cust-detail-check-out" style="margin: 0px; font-size: 20px; text-align: center;"></p>
                             
                             </div>
 
@@ -137,7 +146,7 @@
             <div id="success-booking" style="display: none;">
                 <p style="color: rgb(135, 192, 51); "><i class="fa fa-check" aria-hidden="true" style="margin-right: 10px;"></i>Successfully booked</p>
                 <button type="button" style = "border:1px solid rgba(255, 255, 255, 0);color: rgb(47, 107, 156); background-color: rgb(211, 231, 248); height: 50px; font-size: 15px; float:right; border-radius: 5px; width: 100%; height: 40px; margin-bottom: 20px;" >
-                    <a id="view_invoice" href="">View invoice</a>
+                    <a id="view_invoice" href="" target="_blank">View invoice</a>
                 </button>
                 <button type="button" style = "border:1px solid rgba(255, 255, 255, 0);color: #f5f5f5; background-color: rgb(47, 107, 156); height: 50px; font-size: 15px; float:right; border-radius: 5px; width: 100%; height: 40px; margin-bottom: 20px;">
                     Share invoice
@@ -168,6 +177,8 @@
     var total_kids ;
     var cust_name ;
     var cust_desc ;
+    var cust_check_in_time;
+    var cust_check_out_time;
     var csrf_token;
 
     $(document).ready(function(){
@@ -178,7 +189,7 @@
         // document.getElementById('available-unit').style.display = 'none';
         // document.getElementById('customer-form').style.display = 'none';
         // document.getElementById('check-detail').style.display = 'none';
-        // document.getElementById('success-booking').style.display = 'block';
+        // document.getElementById('success-booking').style.display = 'none';
 
     });
 
@@ -233,36 +244,63 @@
     }
 
     function toDetail(){
+        debugger;
         csrf_token = getCSRFTokenValue()
+        display = true
         
+        // Get all input value
         check_in = document.getElementById('check-in-input').value 
         check_out = document.getElementById('check-out-input').value
         total_adults = document.getElementById('adults-input').value
         total_kids = document.getElementById('kids-input').value
         cust_name = document.getElementById('cust-name').value
         cust_desc = document.getElementById('cust-desc').value
+        cust_check_in_time = document.getElementById('check-in-time').value
+        cust_check_out_time = document.getElementById('check-out-time').value
 
-        var detail_unit = document.getElementById('cust-detail-unit')
-        var detail_name = document.getElementById('cust-detail-name')
-        var detail_check_in = document.getElementById('cust-detail-check-in')
-        var detail_check_out = document.getElementById('cust-detail-check-out')
-        var detail_adults = document.getElementById('cust-detail-adults')
-        var detail_kids = document.getElementById('cust-detail-kids')
-        var detail_desc = document.getElementById('cust-detail-desc')
-
-        detail_unit.innerHTML = '<b>' + house_unit + '</b>'
-        detail_name.innerHTML = '<b>' + cust_name+ '</b>'
-        detail_check_in.innerHTML = '<b>' + check_in+ '</b>'
-        detail_check_out.innerHTML = '<b>' + check_out+ '</b>'
-        detail_adults.innerHTML = '<b>' + total_adults+ '</b>'
-        detail_kids.innerHTML = '<b>' + total_kids+ '</b>'
-        detail_desc.innerHTML = '<b>' + cust_desc+ '</b>'
-
-        document.getElementById('first-start').style.display = 'none';
-        document.getElementById('available-unit').style.display = 'none';
-        document.getElementById('customer-form').style.display = 'none';
-        document.getElementById('check-detail').style.display = 'block';
-        document.getElementById('success-booking').style.display = 'none';
+        // Check input value to ensure no blank field
+        if (cust_name == "") {
+            console.log("Hello");
+            document.getElementById('label-name').innerText = "Required"
+            display = false
+        }
+        if (cust_check_in_time == "") {
+            document.getElementById('label-check-in-time').innerHTML = "Required"
+            display = false
+        }
+        if (cust_check_out_time == "") {
+            document.getElementById('label-check-out-time').innerHTML = "Required"
+            display = false
+        }
+        
+        if (display == true) {
+            // Get all DOM needed
+            var detail_unit = document.getElementById('cust-detail-unit')
+            var detail_name = document.getElementById('cust-detail-name')
+            var detail_check_in = document.getElementById('cust-detail-check-in')
+            var detail_check_out = document.getElementById('cust-detail-check-out')
+            var detail_adults = document.getElementById('cust-detail-adults')
+            var detail_kids = document.getElementById('cust-detail-kids')
+            var detail_desc = document.getElementById('cust-detail-desc')
+    
+    
+            // Assign value into HTML 
+            detail_unit.innerHTML = '<b>' + house_unit + '</b>'
+            detail_name.innerHTML = '<b>' + cust_name+ '</b>'
+            detail_check_in.innerHTML = '<b>' + check_in + '<br>(' + onTimeChange(cust_check_in_time) + ')</b>' 
+            detail_check_out.innerHTML = '<b>' + check_out + '<br>(' + onTimeChange(cust_check_out_time) + ')</b>'
+            detail_adults.innerHTML = '<b>' + total_adults+ '</b>'
+            detail_kids.innerHTML = '<b>' + total_kids+ '</b>'
+            detail_desc.innerHTML = '<b>' + cust_desc+ '</b>'
+    
+    
+            // Current display
+            document.getElementById('first-start').style.display = 'none';
+            document.getElementById('available-unit').style.display = 'none';
+            document.getElementById('customer-form').style.display = 'none';
+            document.getElementById('check-detail').style.display = 'block';
+            document.getElementById('success-booking').style.display = 'none';
+        }
 
     }
 
@@ -280,6 +318,9 @@
         formData.append('total_adult', total_adults)
         formData.append('total_kid', total_kids)
         formData.append('desc', cust_desc)
+        formData.append('check_in_time', cust_check_in_time)
+        formData.append('check_out_time', cust_check_out_time)
+
 
         fetch('{% url "booking-list" %}', {
             method: 'POST', 
@@ -305,6 +346,34 @@
         document.getElementById('customer-form').style.display = 'none';
         document.getElementById('check-detail').style.display = 'none';
         document.getElementById('success-booking').style.display = 'none';
+    }
+
+    function backAvailableUnit() {
+        document.getElementById('first-start').style.display = 'none';
+        document.getElementById('available-unit').style.display = 'block';
+        document.getElementById('customer-form').style.display = 'none';
+        document.getElementById('check-detail').style.display = 'none';
+        document.getElementById('success-booking').style.display = 'none';
+    }
+
+    function onTimeChange(time_value) {
+        var timeSplit = time_value.split(':'), hours, minutes, meridian;
+
+        hours = timeSplit[0];
+        minutes = timeSplit[1];
+        if (hours > 12) {
+            meridian = 'PM';
+            hours -= 12;
+        } else if (hours < 12) {
+            meridian = 'AM';
+            if (hours == 0) {
+            hours = 12;
+            }
+        } else {
+            meridian = 'PM';
+        }
+
+        return time_value + " " + meridian
     }
 
 </script>

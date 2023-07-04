@@ -6,6 +6,7 @@ from client.models import *
 from client.serializers import *
 import requests
 from PyPDF2 import PdfFileReader, PdfFileWriter
+from datetime import datetime
 
 def home(request):
     queryset = HouseUnit.objects.all()
@@ -15,10 +16,23 @@ def home(request):
     return render(request, 'home.html', context)
 
 def booking(request):
-    book_query = Booking.objects.all()
-    book_serializer = BookingCustomerSerializer(book_query, many=True)    
+    book_query = Booking.objects.all().order_by("check_in_date")
+    book_serializer = BookingCustomerSerializer(book_query, many=True)  
 
-    print(book_serializer.data)
+    for book in book_serializer.data:
+        arrival_date = book['check_in_date'] +"T" + book['check_in_time'] + "Z"
+        check_out_date = book['check_out_date'] +"T" + book['check_out_time'] + "Z"
+
+        current_date = datetime.now()
+        arrival_date = datetime.strptime(arrival_date, "%Y-%m-%dT%H:%M:%SZ")
+        check_out_date = datetime.strptime(check_out_date, "%Y-%m-%dT%H:%M:%SZ")
+
+        arrival_days_left = (arrival_date - current_date).days
+
+        book.update({"arrival_days_left": arrival_days_left})
+        book.update({"check_in_date": arrival_date.strftime('%d %b, %Y')})
+        book.update({"check_out_date": check_out_date.strftime('%d %b, %Y')})
+
     context = {
         'booking_data' : book_serializer.data,
     }

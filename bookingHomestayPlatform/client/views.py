@@ -93,10 +93,25 @@ class HouseUnitViewSet(ViewSet):
         return Response(serializers.data)
 
 class BookingViewSet(ViewSet):
+    def setMeridian(self, strtime):
+        timeSplit = strtime.split(':')
+
+        hours = int(timeSplit[0])
+        minutes = int(timeSplit[1])
+        if hours > 12 :
+            meridian = 'PM'
+            hours -= 12
+        elif hours < 12 :
+            meridian = 'AM'
+            if hours == 0 :
+                hours = 12
+        else :
+            meridian = 'PM'
+
+        return strtime + " " + meridian
 
     def showInvoice(self, request, pk = None, filename = None):
-        pdb.set_trace()
-        invoice = Invoice.objects.get(booking__id = pk)
+        invoice = Invoice.objects.get(id = pk)
 
         return HttpResponse(bytes(invoice.content), headers={"Content-Type": "application/pdf",
                                  "Content-Disposition": 'inline; filename=\"' + invoice.title +'.pdf\"',
@@ -109,18 +124,21 @@ class BookingViewSet(ViewSet):
         return Response(serializers.data)
     
     def create(self, request):
-        # pdb.set_trace()
         cust_name = request.POST.get('name')
         houseUnit = request.POST.get('house_unit')
         priceUnit = request.POST.get('price_per_night')
         checkInDate = request.POST.get('check_in_date')
+        checkInTime = request.POST.get('check_in_time')
         checkOutDate = request.POST.get('check_out_date')
+        checkOutTime = request.POST.get('check_out_time')
         totalAdult = request.POST.get('total_adult')
         totalChild = request.POST.get('total_child')
         purpose = request.POST.get('purpose_of_booking')
         invoiceTitle = str(cust_name) + "--" + str(checkInDate) + "-" + str(checkOutDate) +".pdf"
 
         total_night = datetime.strptime(checkOutDate, "%Y-%m-%d") - datetime.strptime(checkInDate, "%Y-%m-%d")
+        invoice_check_in_date = (datetime.strptime(checkInDate, "%Y-%m-%d")).strftime("%d %b, %Y ")
+        invoice_check_out_date = (datetime.strptime(checkOutDate, "%Y-%m-%d")).strftime("%d %b, %Y ")
 
         price_total_night = total_night.days * float(priceUnit)
 
@@ -134,7 +152,7 @@ class BookingViewSet(ViewSet):
 
         invoiceNumber = random.randint(1000,9999)
 
-        context = {"guest_name" : cust_name, "house_unit": houseUnit, "check_in_date": checkInDate, "check_out_date": checkOutDate, "total_adult": totalAdult, "total_kids": totalChild, 'total_night': total_night.days, 'price_per_night': float(priceUnit), 'price_total_night': price_total_night, "invoice_date": invoice_date, "confirmation_code": confirmationCode, "invoice_number": invoiceNumber}
+        context = {"guest_name" : cust_name, "house_unit": houseUnit, "check_in_date": invoice_check_in_date,"check_in_time": self.setMeridian(checkInTime), "check_out_date": invoice_check_out_date, "check_out_time": self.setMeridian( checkOutTime), "total_adult": totalAdult, "total_kids": totalChild, 'total_night': total_night.days, 'price_per_night': float(priceUnit), 'price_total_night': price_total_night, "invoice_date": invoice_date, "confirmation_code": confirmationCode, "invoice_number": invoiceNumber}
 
         invoice_HTML = render(request, 'invoiceTemplate.html', context).content.decode('UTF-8')
 
@@ -161,7 +179,9 @@ class BookingViewSet(ViewSet):
                             house_unit_id = house.id,
                             invoice_id = new_invoice.id,
                             check_in_date = checkInDate,
+                            check_in_time = checkInTime,
                             check_out_date = checkOutDate,
+                            check_out_time = checkOutTime,
                             total_adult = totalAdult,
                             total_child = totalChild,
                             purpose_of_booking = purpose,
